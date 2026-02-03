@@ -20,7 +20,7 @@ int stack_push(struct stack *st, int v)
 
 int stack_pop(struct stack *st)
 {
-  return st->buffer[st->size--];
+  return st->buffer[(st->size--) - 1];
 }
 
 int stack_dup(struct stack* st)

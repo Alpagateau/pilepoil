@@ -7,12 +7,28 @@
 enum OP
 {
   NOP = 0,
+  //STACK MANIPULATION
   PUSH,
   POP,
   SWP,
   ROLL,
   RWD,
   DUP,
+  //MATH OPERATION
+  ADD,
+  SUB,
+  MUL,
+  SHR,
+  SHL,
+  //VM CALLS
+  PPC,
+  JMP,
+  JPS,
+  JPZ,
+  JNZ,
+  JPN, 
+  JPP,
+  //DEBUG
   DEBUG
 };
 
@@ -21,11 +37,20 @@ struct stack_vm
   struct stack stack;
   char ROM[STACK_ROM_SIZE];
   int pc;
+  struct
+  {
+    unsigned char zero:1;
+    unsigned char negative:1;
+  }flags;
 };
 
+//Create an empty VM. The stack still needs to be initialized 
 struct stack_vm stack_vm_empty_vm();
+
+//Load a program into the vm's rom
 int stack_vm_load_prg(struct stack_vm* vm, char* prg, int size);
 
+//Take 1 step into the execution
 int stack_vm_step(struct stack_vm*);
 
 #endif

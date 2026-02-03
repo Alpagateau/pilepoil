@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "vm.h"
 #include "stack.h"
 
@@ -73,7 +74,109 @@ int stack_vm_step(struct stack_vm* vm)
     case DEBUG:
       print_stack(&vm->stack);
       break;
+    case ADD:
+      {
+        int a = stack_pop(&vm->stack);
+        int b = stack_pop(&vm->stack);
+        stack_push(&vm->stack, a + b);
+      }
+      break;
+    case SUB:
+      {
+        int a = stack_pop(&vm->stack);
+        int b = stack_pop(&vm->stack);
+        stack_push(&vm->stack, b - a);
+      }
+      break;
+    case MUL:
+      {
+        int a = stack_pop(&vm->stack);
+        int b = stack_pop(&vm->stack);
+        stack_push(&vm->stack, a * b);
+      }
+      break;
+    case SHR: 
+      {
+        int a = stack_pop(&vm->stack);
+        stack_push(&vm->stack, a >> 1);
+      }
+      break;
+    case SHL:
+      {
+        int a = stack_pop(&vm->stack);
+        stack_push(&vm->stack, a << 1);
+      }
+      break;
+    case PPC: 
+      stack_push(&vm->stack, vm->pc+1);
+      break;
+    case JMP:
+      {
+        vm->pc++;
+        char a = vm->ROM[vm->pc++]; 
+        char b = vm->ROM[vm->pc++];
+        char c = vm->ROM[vm->pc++];
+        char d = vm->ROM[vm->pc];
+        int v = pack4chars(a, b, c, d);
+        vm->pc = v;
+      } 
+      break;
+    case JPS:
+      vm->pc = stack_pop(&vm->stack);
+      break;
+    case JPZ:
+      if(vm->flags.zero == 1)
+      {
+        vm->pc++;
+        char a = vm->ROM[vm->pc++]; 
+        char b = vm->ROM[vm->pc++];
+        char c = vm->ROM[vm->pc++];
+        char d = vm->ROM[vm->pc];
+        int v = pack4chars(a, b, c, d);
+        vm->pc = v;
+      }
+      break;
+    case JNZ:
+      if(vm->flags.zero == 0)
+      {
+        vm->pc++;
+        char a = vm->ROM[vm->pc++]; 
+        char b = vm->ROM[vm->pc++];
+        char c = vm->ROM[vm->pc++];
+        char d = vm->ROM[vm->pc];
+        int v = pack4chars(a, b, c, d);
+        vm->pc = v;
+      }
+      break;
+    case JPN:
+      if(vm->flags.negative == 1)
+      {
+        vm->pc++;
+        char a = vm->ROM[vm->pc++]; 
+        char b = vm->ROM[vm->pc++];
+        char c = vm->ROM[vm->pc++];
+        char d = vm->ROM[vm->pc];
+        int v = pack4chars(a, b, c, d);
+        vm->pc = v;
+      }
+      break;
+    case JPP:
+      if(vm->flags.negative == 0)
+      {
+        vm->pc++;
+        char a = vm->ROM[vm->pc++]; 
+        char b = vm->ROM[vm->pc++];
+        char c = vm->ROM[vm->pc++];
+        char d = vm->ROM[vm->pc];
+        int v = pack4chars(a, b, c, d);
+        vm->pc = v;
+      }
+      break;
   }
+  vm->flags.negative = 
+    (vm->stack.buffer[vm->stack.size - 1] < 0);
+  vm->flags.zero = 
+    (vm->stack.buffer[vm->stack.size - 1] == 0);
   vm->pc++;
   return 0;
 }
