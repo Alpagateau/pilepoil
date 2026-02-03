@@ -42,11 +42,11 @@ int main(int argc, char** argv)
   print_stack(&st);
  
   printf("=== VM TEST === \n");
-  // This prgm computes the first 0x24 fibonacci numbers
+  // This prgm computes the first 16 fibonacci numbers
   char prg[] = {
     PUSH, 0x00, 0x00, 0x00, 0x00,
     PUSH, 0x00, 0x00, 0x00, 0x01,
-    PUSH, 0x00, 0x00, 0x00, 0x24,
+    PUSH, 0x00, 0x00, 0x00, 0x10,
     DEBUG,
     PUSH, 0x00, 0x00, 0x00, 0x01,
     SUB,
