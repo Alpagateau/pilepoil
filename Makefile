@@ -1,7 +1,12 @@
 CFLAGS:=-Wall -Wextra -g
 
+all: test sasm
+
 test: main.c vm.o stack.o
 	gcc -std=c99 main.c *.o -o test $(CFLAGS)
+
+sasm: stack_asm.c
+	gcc -std=c99 stack_asm.c -o sasm $(CFLAGS)
 
 vm.o: vm.h vm.c
 	gcc vm.c -c -o vm.o $(CFLAGS)
