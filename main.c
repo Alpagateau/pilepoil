@@ -6,10 +6,13 @@
 int main(int argc, char** argv)
 {
   int buffer[256] = {};
-  int buffer2[256] = {};
+  int buffer2[256] = {}; 
+  int buffer3[256] = {};
 
   struct stack_vm vm = stack_vm_empty_vm();
+  struct stack_vm vm2 = stack_vm_empty_vm();
   vm.stack = new_stack(buffer2, 256);
+  vm2.stack = new_stack(buffer3, 256);
   struct stack st = new_stack(buffer, 256);
   if(argc > 1)
   {
@@ -66,6 +69,22 @@ int main(int argc, char** argv)
   while(vm.ROM[vm.pc] != NOP)
   {
     stack_vm_step(&vm);
+  }
+
+  if(argc > 1)
+  {
+    FILE* source = fopen(argv[1], "rb");
+    char data[256] = {};
+    fread(data, 1, 255, source);
+    fclose(source);
+
+    printf("=== Assembled version test ===\n");
+
+    stack_vm_load_prg(&vm2, data, sizeof(data));
+    while(vm2.ROM[vm2.pc] != NOP)
+    {
+      stack_vm_step(&vm2);
+    }
   }
   
   return 0;

@@ -1,0 +1,15 @@
+push 0
+push 1
+push 16
+debug
+push 1
+sub 
+rwd 3
+dup 
+roll 3
+add 
+roll 3
+debug 
+jnz 15 
+something
+something

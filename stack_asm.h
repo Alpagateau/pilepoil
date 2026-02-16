@@ -2,6 +2,7 @@
 #define STACK_ASM_H
 
 #include <stdio.h>
+#include <stdbool.h>
 #define STR_LEN 256
 
 enum token_type 
@@ -29,6 +30,7 @@ struct lexer
 struct parser
 {
   struct lexer* lexer;
+  struct token last_token;
 };
 
 //Lexer
@@ -43,5 +45,13 @@ struct token lex_int(struct lexer* l);
 
 //Parser
 struct parser new_parser(struct lexer* l);
+bool accept(struct parser* p, enum token_type tt);
+void expect(struct parser* p, enum token_type tt);
+void advance(struct parser* p);
+
+char parse_opcode(struct parser* p);
+int parse_integer(struct parser* p);
+
+int assemble(struct parser* p, char* out, int max_len);
 
 #endif
