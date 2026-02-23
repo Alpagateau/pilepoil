@@ -49,7 +49,7 @@ int main(int argc, char** argv)
   char prg[] = {
     PUSH, 0x00, 0x00, 0x00, 0x00,
     PUSH, 0x00, 0x00, 0x00, 0x01,
-    PUSH, 0x00, 0x00, 0x00, 0x10,
+    PUSH, 0x00, 0x00, 0x00, 0x04,
     DEBUG,
     PUSH, 0x00, 0x00, 0x00, 0x01,
     SUB,
@@ -60,17 +60,18 @@ int main(int argc, char** argv)
     ROLL, 0x00, 0x00, 0x00, 0x03,
     DEBUG,
     JNZ,  0x00, 0x00, 0x00, 0x0F,
-    NOP,
-    NOP
+    HALT
   };
 
+  printf("Program length : %ld\n", sizeof(prg));
   stack_vm_load_prg(&vm, prg, sizeof(prg));
 
-  while(vm.ROM[vm.pc] != NOP)
+  while(vm.ROM[vm.pc] != HALT)
   {
     stack_vm_step(&vm);
-  }
-
+    if(vm.pc > sizeof(prg))
+      break;
+  } 
   if(argc > 1)
   {
     FILE* source = fopen(argv[1], "rb");
@@ -81,9 +82,11 @@ int main(int argc, char** argv)
     printf("=== Assembled version test ===\n");
 
     stack_vm_load_prg(&vm2, data, sizeof(data));
-    while(vm2.ROM[vm2.pc] != NOP)
+    while(vm2.ROM[vm2.pc] != HALT)
     {
       stack_vm_step(&vm2);
+      if(vm2.pc > sizeof(prg))
+        break;
     }
   }
   

@@ -1,6 +1,10 @@
 CFLAGS:=-Wall -Wextra -g
 
-all: test sasm
+all: test sasm test.stack
+
+test.stack: test.sasm
+	./sasm ./test.sasm
+	mv ./test.sasm.stack ./test.stack
 
 test: main.c vm.o stack.o
 	gcc -std=c99 main.c *.o -o test $(CFLAGS)

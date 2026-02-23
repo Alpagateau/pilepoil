@@ -1,7 +1,9 @@
 push 0
 push 1
-push 16
+push 36
 debug
+
+@loop
 push 1
 sub 
 rwd 3
@@ -10,6 +12,6 @@ roll 3
 add 
 roll 3
 debug 
-jnz 15 
-something
-something
+jnz loop
+
+halt

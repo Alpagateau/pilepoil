@@ -134,7 +134,7 @@ int stack_vm_step(struct stack_vm* vm)
         char d = vm->ROM[vm->pc];
         int v = pack4chars(a, b, c, d);
         vm->pc = v;
-      }
+      }else{vm->pc+=4;}
       break;
     case JNZ:
       if(vm->flags.zero == 0)
@@ -146,7 +146,7 @@ int stack_vm_step(struct stack_vm* vm)
         char d = vm->ROM[vm->pc];
         int v = pack4chars(a, b, c, d);
         vm->pc = v;
-      }
+      }else{vm->pc+=4;}
       break;
     case JPN:
       if(vm->flags.negative == 1)
@@ -158,7 +158,7 @@ int stack_vm_step(struct stack_vm* vm)
         char d = vm->ROM[vm->pc];
         int v = pack4chars(a, b, c, d);
         vm->pc = v;
-      }
+      }else{vm->pc+=4;}
       break;
     case JPP:
       if(vm->flags.negative == 0)
@@ -170,7 +170,10 @@ int stack_vm_step(struct stack_vm* vm)
         char d = vm->ROM[vm->pc];
         int v = pack4chars(a, b, c, d);
         vm->pc = v;
-      }
+      }else{vm->pc+=4;}
+      break;
+    case HALT:
+      vm->pc--;
       break;
   }
   vm->flags.negative = 
@@ -181,3 +184,52 @@ int stack_vm_step(struct stack_vm* vm)
   return 0;
 }
 
+const char* opcode_name(enum OP o)
+{ 
+switch (o) {
+  case NOP:
+    return "NOP";
+  case PUSH:
+    return "PUSH";
+  case POP:
+    return "POP";
+  case SWP:
+    return "SWP";
+  case ROLL:
+    return "ROLL";
+  case RWD:
+    return "RWD";
+  case DUP:
+    return "DUP";
+  case ADD:
+    return "ADD";
+  case SUB:
+    return "SUB";
+  case MUL:
+    return "MUL";
+  case SHR:
+    return "SHR";
+  case SHL:
+    return "SHL";
+  case PPC:
+    return "PPC";
+  case JMP:
+    return "JMP";
+  case JPS:
+    return "JPS";
+  case JPZ:
+    return "JPZ";
+  case JNZ:
+    return "JNZ";
+  case JPN:
+    return "JPN,";
+  case JPP:
+    return "JPP";
+  case DEBUG:
+    return "DEBUG";
+  case HALT:
+    return "HALT";
+  default:
+    return "Do not see this";
+  }
+}

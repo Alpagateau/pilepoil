@@ -29,7 +29,8 @@ enum OP
   JPN, 
   JPP,
   //DEBUG
-  DEBUG
+  DEBUG,
+  HALT
 };
 
 struct stack_vm
@@ -52,5 +53,7 @@ int stack_vm_load_prg(struct stack_vm* vm, char* prg, int size);
 
 //Take 1 step into the execution
 int stack_vm_step(struct stack_vm*);
+
+const char* opcode_name(enum OP);
 
 #endif

@@ -33,6 +33,12 @@ struct parser
   struct token last_token;
 };
 
+struct marker
+{
+  char name[255];
+  int position;
+};
+
 //Lexer
 struct lexer new_lexer(FILE* input);
 struct token next_token(struct lexer* l);
@@ -51,7 +57,10 @@ void advance(struct parser* p);
 
 char parse_opcode(struct parser* p);
 int parse_integer(struct parser* p);
+struct marker parse_marker(struct parser* p);
 
 int assemble(struct parser* p, char* out, int max_len);
+
+const char* token_type_name(enum token_type t);
 
 #endif
