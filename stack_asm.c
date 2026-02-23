@@ -8,7 +8,7 @@
 
 #define debug_print(...) if(verbose) printf(__VA_ARGS__)
 
-bool verbose = true;
+bool verbose = false;
 
 struct lexer new_lexer(FILE* input)
 {
@@ -251,9 +251,12 @@ struct marker parse_marker(struct parser* p)
 
 int assemble(struct parser* p, char* out, int max_len)
 { 
- 
+
+  printf("Compiling:\n");
   struct marker markers[127] = {};
+  struct marker linkables[127] = {};
   int marker_num = 0;
+  int linkable_num = 0;
 
   int head = 0;
   unsigned int argumented = 
@@ -274,7 +277,9 @@ int assemble(struct parser* p, char* out, int max_len)
     {
       markers[marker_num] = parse_marker(p);
       markers[marker_num].position = head-1;
-      printf("New marker \"%s\" at %d\n", markers[marker_num].name, markers[marker_num].position);
+      printf("\tMarker \"%s\" at %d\n", 
+             markers[marker_num].name, 
+             markers[marker_num].position);
       marker_num++;
       continue;
     }else{
@@ -296,27 +301,52 @@ int assemble(struct parser* p, char* out, int max_len)
       }
       else if(((1 << opcode) & addressable) != 0)
       {
-        for(int i = 0; i < marker_num; i++)
-        {
-          if(strcmp(p->last_token.string, markers[i].name) == 0)
-          {
-            int v = markers[i].position;
-            printf("Marker %s at %d\n", markers[i].name, markers[i].position);
-            char a = (v & 0xFF000000) >> 24;
-            char b = (v & 0x00FF0000) >> 16;
-            char c = (v & 0x0000FF00) >>  8;
-            char d = (v & 0x000000FF) >>  0;
-
-            out[head++] = a;
-            out[head++] = b;
-            out[head++] = c;
-            out[head++] = d;
-            break;
-          }
-        }
+        printf("\topcode : \t%s => %s\n", opcode_name(opcode), p->last_token.string);
+        linkables[linkable_num] = (struct marker){.position = head}; 
+        strcpy(linkables[linkable_num].name, p->last_token.string);
+        linkable_num++;
+        out[head++] = 0xFF;
+        out[head++] = 0xFF;
+        out[head++] = 0xFF;
+        out[head++] = 0xFF;
       }
     }
   }
+
+  printf("Linking :\n");
+  int old_head = head;
+
+  for(int i = 0; i < linkable_num; i++)
+  {
+    int linked_pos = -1;
+    for(int m = 0; m < marker_num; m++)
+    {
+      if(strcmp(markers[m].name, linkables[i].name) == 0) 
+      {
+        linked_pos = markers[m].position;
+        break;
+      }
+    }
+    printf("\t%s => %d\n", linkables[i].name, linked_pos);
+    if(linked_pos < 0) 
+    {
+      fflush(stdout);
+      exit(1);
+    }
+    head = linkables[i].position; 
+    int v = linked_pos;
+    char a = (v & 0xFF000000) >> 24;
+    char b = (v & 0x00FF0000) >> 16;
+    char c = (v & 0x0000FF00) >>  8;
+    char d = (v & 0x000000FF) >>  0;
+
+    out[head++] = a;
+    out[head++] = b;
+    out[head++] = c;
+    out[head++] = d;
+    
+  }
+  head = old_head;
   return head;
 }
 

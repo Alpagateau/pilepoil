@@ -84,9 +84,14 @@ int main(int argc, char** argv)
     stack_vm_load_prg(&vm2, data, sizeof(data));
     while(vm2.ROM[vm2.pc] != HALT)
     {
+      //printf("read %s\n", opcode_name(vm2.ROM[vm2.pc]));
       stack_vm_step(&vm2);
-      if(vm2.pc > sizeof(prg))
+      //printf("exec %s\n", opcode_name(vm2.ROM[vm2.pc]));
+      if(vm2.pc > sizeof(data))
+      {
+        printf("Error, pc out of range(%d)\n", vm2.pc);
         break;
+      }
     }
   }
   

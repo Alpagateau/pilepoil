@@ -59,6 +59,7 @@ char parse_opcode(struct parser* p);
 int parse_integer(struct parser* p);
 struct marker parse_marker(struct parser* p);
 
+
 int assemble(struct parser* p, char* out, int max_len);
 
 const char* token_type_name(enum token_type t);

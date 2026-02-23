@@ -1,0 +1,39 @@
+push 0
+push 5
+
+@loop
+debug
+dup
+push 1
+sub
+jnz non1
+halt
+
+@non1
+pop
+dup
+dup
+shr
+shl
+sub
+jnz impair
+jmp pair
+
+@pair
+pop
+shr
+jmp loop
+
+@impair
+pop
+dup
+dup
+add
+add
+push 1
+add
+jmp loop
+
+@end
+debug
+halt
