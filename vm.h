@@ -30,6 +30,8 @@ enum OP
   JPN, 
   JPP,
   CALL,
+  VMCALL,
+  LNK,
   //DEBUG
   DEBUG,
   HALT
@@ -38,7 +40,8 @@ enum OP
 struct named_function
 {
   char name[64];
-  void (*func)(struct stack s);
+  int idx;
+  void (*func)(struct stack* s);
 };
 
 struct stack_vm
@@ -46,6 +49,7 @@ struct stack_vm
   struct stack stack;
   char ROM[STACK_ROM_SIZE];
   struct named_function func_table[STACK_FT_SIZE];
+  int func_table_num;
   int pc;
   struct
   {

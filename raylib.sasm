@@ -1,0 +1,16 @@
+lnk window_should_close
+lnk begind
+lnk endd
+lnk white
+
+@loop
+  vmcall window_should_close
+  jnz endloop
+  pop
+  vmcall begind
+  vmcall white
+  vmcall endd
+  jmp loop
+
+@endloop
+halt

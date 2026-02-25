@@ -221,6 +221,14 @@ char parse_opcode(struct parser *p)
   {
     out = CALL;
   }
+  else if(strcmp(p->last_token.string, "vmcall") == 0)
+  {
+    out = VMCALL;
+  }
+  else if(strcmp(p->last_token.string, "lnk") == 0)
+  {
+    out = LNK;
+  }
   else if(strcmp(p->last_token.string, "debug") == 0)
   {
     out = DEBUG;
@@ -259,8 +267,10 @@ int assemble(struct parser* p, char* out, int max_len)
   printf("Compiling:\n");
   struct marker markers[127] = {};
   struct marker linkables[127] = {};
+  struct marker funcables[127]  = {};
   int marker_num = 0;
   int linkable_num = 0;
+  int funcable_num = 0;
 
   int head = 0;
   unsigned int argumented = 
@@ -275,6 +285,13 @@ int assemble(struct parser* p, char* out, int max_len)
     1 << JMP  |
     1 << CALL;
 
+  unsigned int stringable = 
+    1 << LNK |
+    1 << VMCALL;
+
+  printf("[ARGUMENTED] %b\n", argumented);
+  printf("[ADRESSABLE] %b\n", addressable);
+  printf("[STRINGABLE] %b\n", stringable);
   debug_print("Argumented : %X\n", argumented);
   while(head < max_len && p->last_token.type != ERROR)
   {
@@ -308,6 +325,7 @@ int assemble(struct parser* p, char* out, int max_len)
       {
         printf("\topcode : \t%s => %s\n", opcode_name(opcode), p->last_token.string);
         linkables[linkable_num] = (struct marker){.position = head}; 
+        expect(p, IDENTIFIER);
         strcpy(linkables[linkable_num].name, p->last_token.string);
         linkable_num++;
         out[head++] = 0xFF;
@@ -315,10 +333,59 @@ int assemble(struct parser* p, char* out, int max_len)
         out[head++] = 0xFF;
         out[head++] = 0xFF;
       }
+      else if(((1 << opcode) & stringable) != 0)
+      {
+        char str[64] = {};
+        expect(p, IDENTIFIER);
+        strcpy(str, p->last_token.string);
+        if(opcode == LNK)
+        {
+          int i = 0;
+          while(str[i] != 0)
+          {
+            out[head++] = str[i++];
+          }
+          out[head++] = 0;
+          printf("\tLINKING : %s\n", str);
+          strcpy(funcables[funcable_num].name, str);
+          funcables[funcable_num].position = funcable_num;
+          funcable_num++;
+          printf("\tlnk %s\n", str);
+        }
+        else 
+        {
+          int idx = -1;
+          for(int i = 0; i < funcable_num; i++)
+          {
+            if(strcmp(str, funcables[i].name) == 0)
+            {
+              idx = funcables[i].position;
+              break;
+            }
+          } 
+          if(idx < 0)
+          {
+            printf("[ERROR] You need to link %s\n", str);
+            fflush(stdout);
+            exit(1);
+          }
+          printf("\t(vm)%s => %d\n", str, idx);
+          char a = (idx & 0xFF000000) >> 24;
+          char b = (idx & 0x00FF0000) >> 16;
+          char c = (idx & 0x0000FF00) >>  8;
+          char d = (idx & 0x000000FF) >>  0;
+
+          out[head++] = a;
+          out[head++] = b;
+          out[head++] = c;
+          out[head++] = d;
+        }
+      }
     }
   }
 
   printf("Linking :\n");
+  printf("-internal :\n");
   int old_head = head;
 
   for(int i = 0; i < linkable_num; i++)

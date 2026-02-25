@@ -1,5 +1,7 @@
+lnk getint
 call init
-push 8
+vmcall getint
+
 @loop_begin
   jpz loop_end
   jpn loop_end

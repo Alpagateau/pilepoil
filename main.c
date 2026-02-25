@@ -1,7 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "vm.h"
 #include "stack.h"
+
+void getint(struct stack* s)
+{
+  int v = 0;
+  fscanf(stdin, "%d", &v);
+  stack_push(s, v);
+}
 
 int main(int argc, char** argv)
 {
@@ -11,6 +19,8 @@ int main(int argc, char** argv)
 
   struct stack_vm vm = stack_vm_empty_vm();
   struct stack_vm vm2 = stack_vm_empty_vm();
+  vm2.func_table[0].func = getint; 
+  strcpy(vm2.func_table[0].name, "getint");
   vm.stack = new_stack(buffer2, 256);
   vm2.stack = new_stack(buffer3, 256);
   struct stack st = new_stack(buffer, 256);

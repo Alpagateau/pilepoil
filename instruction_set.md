@@ -3,6 +3,7 @@
 | Instruction | Op1 | Op2 | Descrition                     |
 | ----------- | --- | --- | ------------------------------ |
 | NOP         | x   | x   | Does nothing                   |
+| LNK         | Str | x   | Checks function was linked     |
 | PUSH        | Val | x   | Pushes Val on the stack        |
 | POP         | x   | x   | Pops the head of the stack     |
 | SWP         | x   | x   | Swaps the first 2 values       |
@@ -22,4 +23,6 @@
 | JPN         | Add | x   | Jumps to add if negative flag  |
 | JPP         | Add | x   | Jumps to add if !negative flag |
 | CALL        | Add | x   | PCC + JUMP                     |
+| VMCALL      | Str | x   | Calls a linked func from vm    |
 | DEBUG       | x   | x   | Prints the current stack       |
+| HALT        | x   | x   | Stops the program              |
