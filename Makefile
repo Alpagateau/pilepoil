@@ -1,10 +1,14 @@
 CFLAGS:=-Wall -Wextra -g
 
-all: test sasm test.stack syr.stack
+all: test sasm test.stack syr.stack test_func.stack
 
 test.stack: test.sasm
 	./sasm ./test.sasm
 	mv ./test.sasm.stack ./test.stack
+
+test_func.stack: test_func.sasm
+	./sasm ./test_func.sasm
+	mv ./test_func.sasm.stack ./test_func.stack
 
 syr.stack: syr.sasm
 	./sasm ./syr.sasm

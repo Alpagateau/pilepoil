@@ -172,6 +172,18 @@ int stack_vm_step(struct stack_vm* vm)
         vm->pc = v;
       }else{vm->pc+=4;}
       break;
+    case CALL:
+      stack_push(&vm->stack, vm->pc+1);
+      {
+        vm->pc++;
+        char a = vm->ROM[vm->pc++]; 
+        char b = vm->ROM[vm->pc++];
+        char c = vm->ROM[vm->pc++];
+        char d = vm->ROM[vm->pc];
+        int v = pack4chars(a, b, c, d);
+        vm->pc = v;
+      } 
+      break;
     case HALT:
       vm->pc--;
       break;
@@ -225,6 +237,8 @@ switch (o) {
     return "JPN,";
   case JPP:
     return "JPP";
+  case CALL:
+    return "CALL";
   case DEBUG:
     return "DEBUG";
   case HALT:

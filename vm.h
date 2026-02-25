@@ -3,6 +3,7 @@
 
 #include "stack.h"
 #define STACK_ROM_SIZE 256
+#define STACK_FT_SIZE 64
 
 enum OP
 {
@@ -28,15 +29,23 @@ enum OP
   JNZ,
   JPN, 
   JPP,
+  CALL,
   //DEBUG
   DEBUG,
   HALT
+};
+
+struct named_function
+{
+  char name[64];
+  void (*func)(struct stack s);
 };
 
 struct stack_vm
 {
   struct stack stack;
   char ROM[STACK_ROM_SIZE];
+  struct named_function func_table[STACK_FT_SIZE];
   int pc;
   struct
   {

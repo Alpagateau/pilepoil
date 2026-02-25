@@ -1,0 +1,28 @@
+call init
+push 8
+@loop_begin
+  jpz loop_end
+  jpn loop_end
+  rwd 3
+  call nxt_fib
+  debug
+  roll 3
+  push 1
+  sub
+  jmp loop_begin
+@loop_end
+halt
+
+@init
+  push 0
+  push 1
+  roll 3
+  jps
+
+@nxt_fib
+  rwd 3
+  dup
+  roll 3
+  add
+  roll 3
+  jps

@@ -21,4 +21,5 @@
 | JNZ         | Add | x   | Jumps to add if !zero flag     |
 | JPN         | Add | x   | Jumps to add if negative flag  |
 | JPP         | Add | x   | Jumps to add if !negative flag |
+| CALL        | Add | x   | PCC + JUMP                     |
 | DEBUG       | x   | x   | Prints the current stack       |

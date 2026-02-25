@@ -71,7 +71,7 @@ struct token lex_ident(struct lexer* l)
     char ident[STR_LEN] = {};
     int s = 0;
     ident[s++] = consume(l);
-    while(isalnum(peek(l)))
+    while(isalnum(peek(l)) || peek(l) == '_')
     {   
       ident[s++] = (char)consume(l);
     }
@@ -217,6 +217,10 @@ char parse_opcode(struct parser *p)
   {
     out = JPP;
   }
+  else if(strcmp(p->last_token.string, "call") == 0)
+  {
+    out = CALL;
+  }
   else if(strcmp(p->last_token.string, "debug") == 0)
   {
     out = DEBUG;
@@ -268,7 +272,8 @@ int assemble(struct parser* p, char* out, int max_len)
     1 << JPZ  | 
     1 << JNZ  | 
     1 << JPN  | 
-    1 << JMP;
+    1 << JMP  |
+    1 << CALL;
 
   debug_print("Argumented : %X\n", argumented);
   while(head < max_len && p->last_token.type != ERROR)
