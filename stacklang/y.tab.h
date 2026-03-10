@@ -55,7 +55,8 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     INT = 258,                     /* INT  */
-    OPE = 259                      /* OPE  */
+    OPS = 259,                     /* OPS  */
+    OPP = 260                      /* OPP  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -65,7 +66,8 @@ extern int yydebug;
 #define YYerror 256
 #define YYUNDEF 257
 #define INT 258
-#define OPE 259
+#define OPS 259
+#define OPP 260
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -77,7 +79,7 @@ union YYSTYPE
   int i;
   char c;
 
-#line 81 "y.tab.h"
+#line 83 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1,6 +1,9 @@
 
-stc: main.c lex.yy.o y.tab.o
-	gcc main.c lex.yy.o y.tab.o -o stc -Wall -Wextra
+stc: main.c lex.yy.o y.tab.o ast.o
+	gcc main.c lex.yy.o y.tab.o ast.o -o stc -Wall -Wextra -I../ -g
+
+ast.o: ast.c
+	gcc ast.c -c -g
 
 lex.yy.o: lex.yy.c
 	gcc lex.yy.c -c -g

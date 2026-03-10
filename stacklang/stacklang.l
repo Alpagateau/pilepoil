@@ -11,9 +11,13 @@ void yyerror(char*);
                 yylval.i = atoi(yytext);
                 return INT;
               }
-[\-+\*/]      {
+[\-+]         {
                 yylval.c = yytext[0];
-                return OPE;
+                return OPS;
+              }
+[\*/]         {
+                yylval.c = yytext[0];
+                return OPP;
               }
 
 "("           return '(';
@@ -23,3 +27,5 @@ void yyerror(char*);
 
 
 %%
+
+int yywrap(){return(1);}

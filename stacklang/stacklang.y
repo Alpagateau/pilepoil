@@ -13,10 +13,12 @@ void yyerror(struct AST**, const char *);
 }
 
 %token <i> INT
-%token <c> OPE
-%type <a> val atom expr prog
-%left OPE
+%token <c> OPS
+%token <c> OPP
+%type <a> val atom expr prog sum product
+%left OPP OPS
 %start prog
+%define parse.error verbose
 %parse-param {struct AST** a}
 
 %%
@@ -25,11 +27,18 @@ prog : expr        {*a = $1;}
      | expr '\n'   {*a = $1;}
      ;
 
-expr: atom OPE expr {$$ = ast(OP, op($2, $1, $3)};
-    | atom
+expr: sum          {$$ = $1;}
     ;
 
-atom: '(' expr ')' {$$ = $2;}
+sum : product OPS product  {$$ = ast(OP, op($2, $1, $3));}
+    | product
+    ;
+
+product : atom OPP product {$$ = ast(OP, op($2, $1, $3));}
+        | atom
+        ;
+
+atom: '(' expr ')'         {$$ = $2;}
     | val
     ;
 
