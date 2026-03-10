@@ -4,6 +4,8 @@
 #include "vm.h"
 #include "stack.h"
 
+#include "stacklang/ast.h"
+
 void getint(struct stack* s)
 {
   int v = 0;
@@ -16,6 +18,18 @@ int main(int argc, char** argv)
   int buffer[256] = {};
   int buffer2[256] = {}; 
   int buffer3[256] = {};
+
+  struct AST* test_eval = ast(
+    OP,
+    op(
+      '+',
+      ast(INT_LIT, int_lit(5)),
+      ast(INT_LIT, int_lit(5))
+    )
+  );
+
+  printf("Test eval : %d\n", evaluate(test_eval));
+  free_ast(test_eval);
 
   struct stack_vm vm = stack_vm_empty_vm();
   struct stack_vm vm2 = stack_vm_empty_vm();

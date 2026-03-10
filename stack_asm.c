@@ -459,6 +459,15 @@ int main(int argc, char** argv)
  
   char title[127] = {};
   strcpy(title, argv[1]);
+  int last_dot = 0;
+  int idx = 0;
+  while(title[idx] != 0)
+  {
+    if(title[idx] == '.')
+      last_dot = idx;
+    idx++;
+  }
+  title[last_dot] = 0;
   strcat(title, ".stack");
   fclose(l.input);
   FILE* out = fopen(title, "wb");
